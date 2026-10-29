@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>New Bill - Billing App</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #222;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 230px;
+            height: 100vh;
+            background: #1f2937;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .menu {
+            display: block;
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 14px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .menu:hover,
+        .menu.active {
+            background: #374151;
+            color: white;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 230px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 30px;
+        }
+
+        .bill-number {
+            background: white;
+            padding: 13px 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            font-weight: bold;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        /* CUSTOMER */
+        .customer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        /* ITEM */
+        .item-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+            padding: 7px 12px;
+            font-size: 13px;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* TOTAL */
+        .total-box {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .total {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        /* PAYMENT */
+        .payment-options {
+            display: flex;
+            gap: 30px;
+        }
+
+        .payment-options label {
+            cursor: pointer;
+        }
+
+        .payment-options input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        /* ACTIONS */
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .save-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .print-btn {
+            background: #6b7280;
+            color: white;
+        }
+
+        .clear-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        /* MOBILE */
+        @media(max-width: 700px) {
+
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo {
+                font-size: 0;
+            }
+
+            .logo::after {
+                content: "BA";
+                font-size: 20px;
+            }
+
+            .menu {
+                font-size: 0;
+                text-align: center;
+            }
+
+            .menu::first-letter {
+                font-size: 20px;
+            }
+
+            .main {
+                margin-left: 70px;
+                padding: 15px;
+            }
+
+            .customer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .item-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions button {
+                width: 100%;
+            }
+        }
+
+        /* PRINT */
+        @media print {
+
+            .sidebar,
+            .actions,
+            .add-btn {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            body {
+                background: white;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            Billing App
+        </div>
+
+        <a href="/" class="menu">
+            📊 Dashboard
+        </a>
+
+        <a href="/billing" class="menu active">
+            🧾 New Bill
+        </a>
+
+        <a href="/daily-entries" class="menu">
+            📋 Daily Entries
+        </a>
+
+        <a href="/products" class="menu">
+            🍽️ Products
+        </a>
+
+        <a href="/customers" class="menu">
+            👥 Customers
+        </a>
+
+        <a href="/reports" class="menu">
+            📈 Reports
+        </a>
+
+        <a href="/settings" class="menu">
+            ⚙️ Settings
+        </a>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+        <div class="topbar">
+
+            <h1>New Bill</h1>
+
+            <div class="bill-number">
+                Bill No:
+                <span id="billNumber">
+                    {{ next_bill_no }}
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- CUSTOMER -->
+
+        <div class="card">
+
+            <h3>Customer Details</h3>
+
+            <div class="customer-grid">
+
+                <div class="input-group">
+
+                    <label>Customer Name</label>
+
+                    <input
+                        type="text"
+                        id="customerName"
+                        placeholder="Enter customer name">
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Mobile Number</label>
+
+                    <input
+                        type="text"
+                        id="customerMobile"
+                        placeholder="Enter mobile number">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ADD ITEM -->
+
+        <div class="card">
+
+            <h3>Add Item</h3>
+
+            <div class="item-grid">
+
+                <div class="input-group">
+
+                    <label>Select Product</label>
+
+                    <select id="product">
+
+                        <option value="">
+                            Select Item
+                        </option>
+
+                        {% for product in products %}
+
+                        <option
+                            value="{{ product['id'] }}"
+                            data-name="{{ product['name'] }}"
+                            data-price="{{ product['price'] }}">
+
+                            {{ product['name'] }}
+                            - ₹{{ "%.2f"|format(product['price']) }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Quantity</label>
+
+                    <input
+                        type="number"
+                        id="quantity"
+                        value="1"
+                        min="1">
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="add-btn"
+                    onclick="addItem()">
+
+                    + Add Item
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- BILL ITEMS -->
+
+        <div class="card">
+
+            <h3>Bill Items</h3>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="billItems">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="total-box">
+
+                <div class="total">
+                    Grand Total:
+                    ₹<span id="grandTotal">0.00</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYMENT -->
+
+        <div class="card">
+
+            <h3>Payment Method</h3>
+
+            <div class="payment-options">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="payment"
+                        value="Cash"
+                        checked>
+                    Cash
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="payment"
+                        value="UPI">
+                    UPI
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="card">
+
+            <div class="actions">
+
+                <button
+                    type="button"
+                    class="clear-btn"
+                    onclick="clearBill()">
+                    Clear
+                </button>
+
+                <button
+                    type="button"
+                    class="print-btn"
+                    onclick="printBill()">
+                    Print
+                </button>
+
+                <button
+                    type="button"
+                    class="save-btn"
+                    onclick="saveBill()">
+                    Save Bill
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+<script>
+
+    let items = [];
+
+
+    // ADD ITEM
+    function addItem() {
+
+        const product =
+            document.getElementById("product");
+
+        const quantity =
+            parseInt(
+                document.getElementById("quantity").value
+            );
+
+        if (product.value === "") {
+
+            alert("Please select a product.");
+
+            return;
+        }
+
+        if (!quantity || quantity < 1) {
+
+            alert("Please enter valid quantity.");
+
+            return;
+        }
+
+        const selectedOption =
+            product.options[product.selectedIndex];
+
+        const name =
+            selectedOption.dataset.name;
+
+        const price =
+            parseFloat(selectedOption.dataset.price);
+
+        const total =
+            price * quantity;
+
+        items.push({
+            name: name,
+            quantity: quantity,
+            price: price,
+            total: total
+        });
+
+        renderItems();
+
+        product.value = "";
+
+        document.getElementById("quantity").value = 1;
+    }
+
+
+    // DISPLAY ITEMS
+    function renderItems() {
+
+        const tbody =
+            document.getElementById("billItems");
+
+        tbody.innerHTML = "";
+
+        let grandTotal = 0;
+
+        items.forEach((item, index) => {
+
+            grandTotal += item.total;
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>₹${item.price.toFixed(2)}</td>
+                <td>₹${item.total.toFixed(2)}</td>
+                <td>
+                    <button
+                        type="button"
+                        class="delete-btn"
+                        onclick="removeItem(${index})">
+                        Delete
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+        });
+
+        document.getElementById("grandTotal")
+            .innerText =
+            grandTotal.toFixed(2);
+    }
+
+
+    // REMOVE ITEM
+    function removeItem(index) {
+
+        items.splice(index, 1);
+
+        renderItems();
+    }
+
+
+    // CLEAR BILL
+    function clearBill() {
+
+        if (items.length > 0) {
+
+            if (!confirm("Clear this bill?")) {
+                return;
+            }
+        }
+
+        items = [];
+
+        renderItems();
+
+        document.getElementById("customerName").value = "";
+
+        document.getElementById("customerMobile").value = "";
+    }
+
+
+    // SAVE BILL
+    function saveBill() {
+
+        if (items.length === 0) {
+
+            alert("Please add at least one item.");
+
+            return;
+        }
+
+        const customerName =
+            document.getElementById("customerName")
+                .value.trim();
+
+        const customerMobile =
+            document.getElementById("customerMobile")
+                .value.trim();
+
+        const paymentMethod =
+            document.querySelector(
+                'input[name="payment"]:checked'
+            ).value;
+
+        const total =
+            items.reduce(
+                (sum, item) => sum + item.total,
+                0
+            );
+
+        const billData = {
+
+            customer_name: customerName,
+
+            customer_mobile: customerMobile,
+
+            payment_method: paymentMethod,
+
+            total: total,
+
+            items: items
+        };
+
+
+        fetch("/save-bill", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(billData)
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            if (data.success) {
+
+                alert(
+                    "Bill #" +
+                    data.bill_no +
+                    " saved successfully!"
+                );
+
+                items = [];
+
+                renderItems();
+
+                document.getElementById(
+                    "customerName"
+                ).value = "";
+
+                document.getElementById(
+                    "customerMobile"
+                ).value = "";
+
+                document.getElementById(
+                    "billNumber"
+                ).innerText =
+                    data.bill_no + 1;
+
+            }
+
+            else {
+
+                alert(
+                    "Error: " +
+                    data.message
+                );
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            alert(
+                "Something went wrong while saving the bill."
+            );
+
+        });
+
+    }
+
+
+    // PRINT
+    function printBill() {
+
+        if (items.length === 0) {
+
+            alert("Please add items before printing.");
+
+            return;
+        }
+
+        window.print();
+    }
+
+</script>
+
+</body>
+
+</html>

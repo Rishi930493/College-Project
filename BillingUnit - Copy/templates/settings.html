@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings - Billing App</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 22px 13px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .logo p {
+            margin-top: 7px;
+            color: #aeb9cc;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #dbe4f3;
+            padding: 17px 20px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 20px;
+        }
+
+        .menu a:hover {
+            background: #1e293b;
+        }
+
+        .menu a.active {
+            background: #2864e6;
+            color: white;
+        }
+
+        .main {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .top h2 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .top p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #2864e6;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .save-btn {
+            border: none;
+            background: #198754;
+            color: white;
+            padding: 13px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding: 14px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #475569;
+        }
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .menu {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            <h1>Billing App</h1>
+            <p>Food Shop POS</p>
+        </div>
+
+        <div class="menu">
+
+            <a href="/">
+                🏠 Dashboard
+            </a>
+
+            <a href="/billing">
+                🧾 New Bill
+            </a>
+
+            <a href="/daily-entries">
+                📋 Daily Entries
+            </a>
+
+            <a href="/products">
+                🍔 Products
+            </a>
+
+            <a href="/customers">
+                👥 Customers
+            </a>
+
+            <a href="/reports">
+                📊 Reports
+            </a>
+
+            <a href="/settings" class="active">
+                ⚙️ Settings
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+        <div class="top">
+
+            <h2>⚙️ Settings</h2>
+
+            <p>
+                Manage your shop information used for billing.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <form action="/save-settings" method="POST">
+
+                <div class="form-group">
+
+                    <label>
+                        🏪 Shop Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="shop_name"
+                        placeholder="Enter shop name"
+                        value="{{ settings['shop_name'] if settings else '' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        📱 Mobile Number
+                    </label>
+
+                    <input
+                        type="text"
+                        name="mobile"
+                        placeholder="Enter mobile number"
+                        value="{{ settings['mobile'] if settings else '' }}"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        📍 Shop Address
+                    </label>
+
+                    <textarea
+                        name="address"
+                        placeholder="Enter complete shop address"
+                    >{{ settings['address'] if settings else '' }}</textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        🧾 Bill Header
+                    </label>
+
+                    <input
+                        type="text"
+                        name="bill_header"
+                        placeholder="Example: Snacks, Tea & Fast Food"
+                        value="{{ settings['bill_header'] if settings else '' }}"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    💾 Save Settings
+                </button>
+
+            </form>
+
+
+            <div class="note">
+                💡 Shop information saved here can be used automatically
+                on your bills and printable receipts.
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

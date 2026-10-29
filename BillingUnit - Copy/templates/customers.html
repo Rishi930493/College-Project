@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customers - Billing App</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: #0f172a;
+            color: white;
+            padding: 22px 13px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .logo p {
+            margin-top: 7px;
+            color: #aeb9cc;
+            font-size: 16px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #dbe4f3;
+            padding: 17px 20px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 20px;
+        }
+
+        .menu a:hover {
+            background: #1e293b;
+        }
+
+        .menu a.active {
+            background: #2864e6;
+            color: white;
+        }
+
+        .main {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .top h2 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .top p {
+            color: #666;
+            margin-top: 7px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 15px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .customer-name {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .mobile {
+            color: #475569;
+        }
+
+        .amount {
+            font-weight: bold;
+            color: #15803d;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #777;
+            font-size: 17px;
+        }
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .menu {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .top h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="logo">
+            <h1>Billing App</h1>
+            <p>Food Shop POS</p>
+        </div>
+
+        <div class="menu">
+
+            <a href="/">
+                🏠 Dashboard
+            </a>
+
+            <a href="/billing">
+                🧾 New Bill
+            </a>
+
+            <a href="/daily-entries">
+                📋 Daily Entries
+            </a>
+
+            <a href="/products">
+                🍔 Products
+            </a>
+
+            <a href="/customers" class="active">
+                👥 Customers
+            </a>
+
+            <a href="/reports">
+                📊 Reports
+            </a>
+
+            <a href="/settings">
+                ⚙️ Settings
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <div class="top">
+            <div>
+                <h2>👥 Customers</h2>
+                <p>View your saved customer information and purchase history.</p>
+            </div>
+        </div>
+
+
+        <div class="card">
+
+            <div class="table-container">
+
+                {% if customers %}
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Mobile</th>
+                            <th>Total Bills</th>
+                            <th>Total Purchase</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for customer in customers %}
+
+                        <tr>
+
+                            <td class="customer-name">
+                                {{ customer['customer_name'] or 'Customer' }}
+                            </td>
+
+                            <td class="mobile">
+                                {{ customer['customer_mobile'] }}
+                            </td>
+
+                            <td>
+                                {{ customer['total_bills'] }}
+                            </td>
+
+                            <td class="amount">
+                                ₹{{ "%.2f"|format(customer['total_purchase']) }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                <div class="empty">
+                    👥 No customers found yet.
+                    <br><br>
+                    Customers will appear here when you save a bill
+                    with a mobile number.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

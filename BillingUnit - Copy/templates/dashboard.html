@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Billing App</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #0f172a;
+            padding: 25px 15px;
+            z-index: 1000;
+        }
+
+        .logo {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .logo p {
+            margin: 5px 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 13px 15px;
+            margin-bottom: 7px;
+            border-radius: 7px;
+            transition: 0.2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #64748b;
+            margin-top: 7px;
+        }
+
+        /* CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .card-icon {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* QUICK ACTIONS */
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .action {
+            text-decoration: none;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            color: #1e293b;
+            transition: 0.2s;
+        }
+
+        .action:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .action strong {
+            display: block;
+            font-size: 17px;
+            margin-bottom: 6px;
+        }
+
+        .action span {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* INFO */
+
+        .info-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+        }
+
+        .info-box h2 {
+            margin-top: 0;
+        }
+
+        .info-box p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 1000px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+
+            <h2>Billing App</h2>
+
+            <p>Food Shop POS</p>
+
+        </div>
+
+
+        <div class="menu">
+
+            <a href="/" class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="/billing">
+                🧾 New Bill
+            </a>
+
+            <a href="/daily-entries">
+                📋 Daily Entries
+            </a>
+
+            <a href="/products">
+                🍔 Products
+            </a>
+
+            <a href="/customers">
+                👥 Customers
+            </a>
+
+            <a href="/reports">
+                📊 Reports
+            </a>
+
+            <a href="/settings">
+                ⚙ Settings
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main">
+
+
+        <div class="header">
+
+            <h1>Dashboard</h1>
+
+            <p>
+                Welcome to your Food Shop Billing System
+            </p>
+
+        </div>
+
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="cards">
+
+
+            <!-- TODAY SALES -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    💰
+                </div>
+
+                <div class="card-title">
+                    Today's Collection
+                </div>
+
+                <div class="card-value">
+                    ₹{{ "%.2f"|format(today_sales) }}
+                </div>
+
+            </div>
+
+
+            <!-- TODAY BILLS -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    🧾
+                </div>
+
+                <div class="card-title">
+                    Today's Bills
+                </div>
+
+                <div class="card-value">
+                    {{ today_bills }}
+                </div>
+
+            </div>
+
+
+            <!-- CUSTOMERS -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    👥
+                </div>
+
+                <div class="card-title">
+                    Customers
+                </div>
+
+                <div class="card-value">
+                  {{ customer_count }}
+                </div>
+
+            </div>
+
+
+            <!-- MONTHLY -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    📅
+                </div>
+
+                <div class="card-title">
+                    Monthly Collection
+                </div>
+
+                <div class="card-value">
+                  ₹{{ "%.2f"|format(monthly_sales) }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="section">
+
+            <h2>Quick Actions</h2>
+
+
+            <div class="actions">
+
+                <a href="/billing" class="action">
+
+                    <strong>
+                        🧾 Create New Bill
+                    </strong>
+
+                    <span>
+                        Create and save a new customer bill
+                    </span>
+
+                </a>
+
+
+                <a href="/products" class="action">
+
+                    <strong>
+                        🍔 Manage Products
+                    </strong>
+
+                    <span>
+                        Add or delete food items and prices
+                    </span>
+
+                </a>
+
+
+                <a href="/daily-entries" class="action">
+
+                    <strong>
+                        📋 Daily Entries
+                    </strong>
+
+                    <span>
+                        View all saved bills and collections
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- SYSTEM INFORMATION -->
+
+        <div class="info-box">
+
+            <h2>Billing System</h2>
+
+            <p>
+                Your food shop billing system is connected
+                with a local SQLite database. Bills and
+                product information are stored safely in
+                your database.
+            </p>
+
+            <p>
+                Use <strong>New Bill</strong> to create a bill,
+                <strong>Products</strong> to manage food items,
+                and <strong>Daily Entries</strong> to check
+                saved transactions.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

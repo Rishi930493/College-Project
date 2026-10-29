@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bill #{{ bill['bill_no'] }}</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #f1f5f9;
+            font-family: Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .bill-container {
+            width: 100%;
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        .shop-header {
+            text-align: center;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .shop-header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #0f172a;
+        }
+
+        .shop-header p {
+            margin: 5px 0;
+            color: #64748b;
+        }
+
+        .bill-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .customer-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .customer-info p {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 12px 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .total-section {
+            margin-top: 20px;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 15px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .payment {
+            margin-top: 10px;
+            text-align: right;
+            font-size: 15px;
+        }
+
+        .thank-you {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #cbd5e1;
+            color: #64748b;
+        }
+
+        .buttons {
+            max-width: 700px;
+            margin: 20px auto 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button,
+        a {
+            border: none;
+            padding: 12px 22px;
+            border-radius: 7px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .print-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .back-btn {
+            background: #334155;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .bill-container {
+                padding: 18px;
+            }
+
+            .bill-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button,
+            a {
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        @media print {
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .bill-container {
+                max-width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+                padding: 10px;
+            }
+
+            .buttons {
+                display: none;
+            }
+
+            .shop-header h1 {
+                font-size: 24px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="bill-container">
+
+        <div class="shop-header">
+
+            <h1>FOOD SHOP</h1>
+
+            <p>Food • Snacks • Beverages</p>
+
+        </div>
+
+
+        <div class="bill-info">
+
+            <div>
+                <strong>Bill No:</strong>
+                #{{ bill['bill_no'] }}
+            </div>
+
+            <div>
+                <strong>Date:</strong>
+                {{ bill['bill_date'] }}
+            </div>
+
+        </div>
+
+
+        <div class="customer-info">
+
+            <p>
+                <strong>Customer:</strong>
+                {% if bill['customer_name'] %}
+                    {{ bill['customer_name'] }}
+                {% else %}
+                    Walk-in Customer
+                {% endif %}
+            </p>
+
+            {% if bill['customer_mobile'] %}
+            <p>
+                <strong>Mobile:</strong>
+                {{ bill['customer_mobile'] }}
+            </p>
+            {% endif %}
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Item</th>
+                    <th class="right">Qty</th>
+                    <th class="right">Price</th>
+                    <th class="right">Total</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>{{ loop.index }}</td>
+
+                    <td>{{ item['product_name'] }}</td>
+
+                    <td class="right">
+                        {{ item['quantity'] }}
+                    </td>
+
+                    <td class="right">
+                        ₹{{ "%.2f"|format(item['price']) }}
+                    </td>
+
+                    <td class="right">
+                        ₹{{ "%.2f"|format(item['total']) }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        <div class="total-section">
+
+            <div class="total-row">
+
+                <span>Grand Total</span>
+
+                <span>
+                    ₹{{ "%.2f"|format(bill['total']) }}
+                </span>
+
+            </div>
+
+            <div class="payment">
+
+                <strong>Payment:</strong>
+                {{ bill['payment_method'] }}
+
+            </div>
+
+        </div>
+
+
+        <div class="thank-you">
+
+            <strong>Thank You!</strong>
+
+            <p>Please visit again.</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="buttons">
+
+        <button class="print-btn"
+                onclick="window.print()">
+            🖨 Print Bill
+        </button>
+
+        <a href="/daily-entries"
+           class="back-btn">
+            ← Back to Daily Entries
+        </a>
+
+    </div>
+
+</body>
+
+</html>

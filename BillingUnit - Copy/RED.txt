@@ -1,0 +1,9 @@
+python --version
+
+python -m pip install flask
+
+python app.py          // for run
+
+python -m pip install openpyxl
+
+python -m pip install reportlab
