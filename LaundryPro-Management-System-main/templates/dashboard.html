@@ -1,0 +1,77 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="text-secondary">Welcome, {{ session.get('username') }}!</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('new_order') }}">
+        + New Order
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <p>Total Customers</p>
+            <h2>{{ customers }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <p>Total Orders</p>
+            <h2>{{ orders }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <p>Open Orders</p>
+            <h2>{{ pending }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <p>Paid Revenue</p>
+            <h2>₹{{ "%.2f"|format(revenue) }}</h2>
+        </div>
+    </div>
+</div>
+
+<h3 class="mb-3">Recent Orders</h3>
+
+<div class="table-responsive bg-white rounded">
+<table class="table table-hover align-middle mb-0">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Amount</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for o in recent %}
+        <tr>
+            <td>{{ o.order_code }}</td>
+            <td>{{ o.customer_name }}</td>
+            <td>{{ o.service_name }}</td>
+            <td>₹{{ "%.2f"|format(o.total) }}</td>
+            <td>{{ o.status }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5">No orders available.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Student Dashboard</h2>
+
+<div class="row g-3">
+    {% for exam in exams %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card exam-card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ exam.title }}</h5>
+
+                <p class="text-muted">
+                    Questions: {{ exam.question_count }}<br>
+                    Duration: {{ exam.duration }} minutes<br>
+                    Total Marks: {{ exam.total_marks }}
+                </p>
+
+                {% if exam.result_id %}
+                    <span class="badge bg-success">Completed</span>
+                    <a href="{{ url_for('show_result', exam_id=exam.id) }}"
+                       class="btn btn-outline-primary w-100 mt-3">
+                        View Result
+                    </a>
+                {% elif exam.question_count > 0 %}
+                    <a href="{{ url_for('take_exam', exam_id=exam.id) }}"
+                       class="btn btn-primary w-100">
+                        Start Exam
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        No Questions Available
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">No active exams available.</div>
+    </div>
+    {% endfor %}
+</div>
+
+<h3 class="mt-5 mb-3">My Results</h3>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped bg-white">
+        <thead>
+            <tr>
+                <th>Exam</th>
+                <th>Score</th>
+                <th>Total Marks</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for result in results %}
+            <tr>
+                <td>{{ result.title }}</td>
+                <td>{{ result.score }}</td>
+                <td>{{ result.total_marks }}</td>
+                <td>{{ result.submitted_at }}</td>
+                <td>
+                    <a class="btn btn-sm btn-outline-primary"
+                       href="{{ url_for('show_result', exam_id=result.exam_id) }}">
+                        View
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">No results yet.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

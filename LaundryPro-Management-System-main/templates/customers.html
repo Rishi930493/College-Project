@@ -1,0 +1,74 @@
+
+{% extends "base.html" %}
+
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Customer Management</h1>
+
+<div class="panel mb-4">
+    <h4>Add New Customer</h4>
+
+    <form method="POST" class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Full Name *</label>
+            <input class="form-control" name="name" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Phone *</label>
+            <input class="form-control" name="phone" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" name="email">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Address</label>
+            <input class="form-control" name="address">
+        </div>
+
+        <div class="col-12">
+            <button class="btn btn-primary">Save Customer</button>
+        </div>
+    </form>
+</div>
+
+<form method="GET" class="d-flex gap-2 mb-3">
+    <input class="form-control" name="q"
+           value="{{ q }}" placeholder="Search name or phone">
+    <button class="btn btn-outline-primary">Search</button>
+</form>
+
+<div class="table-responsive bg-white rounded">
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for c in customers %}
+        <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.phone }}</td>
+            <td>{{ c.email or '-' }}</td>
+            <td>{{ c.address or '-' }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5">No customers found.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

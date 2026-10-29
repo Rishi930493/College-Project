@@ -1,0 +1,96 @@
+
+{% extends "base.html" %}
+
+{% block title %}New Order{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Create Laundry Order</h1>
+
+{% if not customers %}
+<div class="alert alert-warning">
+    आधी Customer Management मधून customer add कर.
+    <a href="{{ url_for('customers_page') }}">Add Customer</a>
+</div>
+{% else %}
+
+<div class="panel">
+    <form method="POST" class="row g-3">
+
+        <div class="col-md-6">
+            <label class="form-label">Customer *</label>
+            <select class="form-select" name="customer_id" required>
+                <option value="">Select Customer</option>
+                {% for c in customers %}
+                <option value="{{ c.id }}">
+                    {{ c.name }} - {{ c.phone }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Laundry Service *</label>
+            <select class="form-select" name="service_id"
+                    id="service" required>
+                <option value="">Select Service</option>
+                {% for s in services %}
+                <option value="{{ s.id }}" data-price="{{ s.price }}">
+                    {{ s.name }} - ₹{{ s.price }}/kg
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Weight (kg) *</label>
+            <input class="form-control" type="number" name="weight"
+                   id="weight" min="0.1" max="1000"
+                   step="0.1" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Estimated Bill</label>
+            <input class="form-control" id="total" readonly
+                   placeholder="Bill automatically calculated">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Pickup Date</label>
+            <input class="form-control" type="date" name="pickup_date">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Expected Delivery Date</label>
+            <input class="form-control" type="date" name="delivery_date">
+        </div>
+
+        <div class="col-12">
+            <button class="btn btn-primary">Create Order</button>
+            <a href="{{ url_for('orders_page') }}"
+               class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+const service = document.getElementById("service");
+const weight = document.getElementById("weight");
+const total = document.getElementById("total");
+
+function calculateBill() {
+    const option = service.options[service.selectedIndex];
+    const price = Number(option.dataset.price || 0);
+    const kg = Number(weight.value || 0);
+
+    if (price > 0 && kg > 0) {
+        total.value = "₹" + (price * kg).toFixed(2);
+    } else {
+        total.value = "";
+    }
+}
+
+service.addEventListener("change", calculateBill);
+weight.addEventListener("input", calculateBill);
+</script>
+{% endif %}
+{% endblock %}

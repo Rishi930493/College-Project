@@ -1,0 +1,109 @@
+
+body {
+    background: #f3f6fb;
+    color: #203047;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.app-nav {
+    background: linear-gradient(100deg, #142f49, #23668a);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    letter-spacing: 0.3px;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.stat-card {
+    height: 100%;
+    padding: 22px;
+    background: white;
+    border: 1px solid #e3eaf2;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(25, 55, 85, 0.05);
+}
+
+.stat-card p {
+    color: #718096;
+    margin-bottom: 8px;
+}
+
+.stat-card h2 {
+    color: #246bfd;
+    font-size: 27px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e3eaf2;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 5px 20px rgba(25, 55, 85, 0.05);
+}
+
+.table {
+    background: white;
+}
+
+.table thead th {
+    background: #eaf0f7;
+    color: #41566d;
+    white-space: nowrap;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.form-control,
+.form-select {
+    border-radius: 7px;
+    padding: 10px;
+}
+
+.btn {
+    border-radius: 7px;
+    padding: 9px 15px;
+}
+
+.login-wrap {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+}
+
+.login-card {
+    background: white;
+    padding: 32px;
+    width: min(420px, 100%);
+    border-radius: 16px;
+    border: 1px solid #e3eaf2;
+    box-shadow: 0 10px 35px rgba(25, 55, 85, 0.09);
+}
+
+.login-card h1 {
+    font-size: 25px;
+}
+
+footer {
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 23px;
+    }
+
+    .panel,
+    .login-card {
+        padding: 18px;
+    }
+}

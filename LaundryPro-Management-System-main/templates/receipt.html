@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Receipt - {{ order['order_code'] }}</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            padding: 20px;
+        }
+
+        .receipt {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        h1, .center {
+            text-align: center;
+        }
+
+        .line {
+            border-top: 1px dashed #777;
+            margin: 18px 0;
+        }
+
+        .details p {
+            margin: 10px 0;
+        }
+
+        .total {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .print-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 12px 24px;
+            background: #087f8c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .receipt {
+                border: none;
+                margin: 0 auto;
+                max-width: 100%;
+            }
+
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="receipt">
+
+    <h1>Laundry Service</h1>
+    <p class="center">Customer Receipt</p>
+
+    <div class="line"></div>
+
+    <div class="details">
+        <p><strong>Receipt No:</strong> {{ order['order_code'] }}</p>
+        <p><strong>Order Date:</strong> {{ order['created_at'] }}</p>
+        <p><strong>Customer:</strong> {{ order['customer_name'] }}</p>
+        <p><strong>Phone:</strong> {{ order['customer_phone'] }}</p>
+        <p><strong>Address:</strong> {{ order['customer_address'] or 'N/A' }}</p>
+    </div>
+
+    <div class="line"></div>
+
+    <h3>Order Details</h3>
+
+    <div class="details">
+        <p><strong>Service:</strong> {{ order['service_name'] }}</p>
+        <p><strong>Rate:</strong> ₹{{ "%.2f"|format(order['service_price']) }}</p>
+        <p><strong>Weight:</strong> {{ order['weight'] }} kg</p>
+        <p><strong>Pickup Date:</strong> {{ order['pickup_date'] or 'N/A' }}</p>
+        <p><strong>Delivery Date:</strong> {{ order['delivery_date'] or 'N/A' }}</p>
+        <p><strong>Order Status:</strong> {{ order['status'] }}</p>
+        <p><strong>Payment Status:</strong> {{ order['payment'] }}</p>
+    </div>
+
+    <div class="line"></div>
+
+    <p class="total">
+        Total: ₹{{ "%.2f"|format(order['total']) }}
+    </p>
+
+    <div class="line"></div>
+
+    <p class="center">Thank you for choosing our laundry service!</p>
+    <p class="center">Please visit again.</p>
+
+    <button class="print-btn" onclick="window.print()">
+        Print Receipt
+    </button>
+
+</div>
+</body>
+</html>cd
+

@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <h1>📚 Library Management</h1>
+            <p>Manage books, students and transactions</p>
+        </div>
+        <span class="status">Library Portal</span>
+    </header>
+
+    <main class="container">
+        <section class="stats">
+            <div class="stat-card">
+                <span>Total Book Titles</span>
+                <h2>{{ stats.books }}</h2>
+            </div>
+            <div class="stat-card">
+                <span>Registered Students</span>
+                <h2>{{ stats.students }}</h2>
+            </div>
+            <div class="stat-card">
+                <span>Available Copies</span>
+                <h2>{{ stats.available }}</h2>
+            </div>
+            <div class="stat-card">
+                <span>Active Issues</span>
+                <h2>{{ stats.issued }}</h2>
+            </div>
+        </section>
+
+        <nav class="tabs">
+            <button class="tab active" data-target="books-section">Books</button>
+            <button class="tab" data-target="students-section">Students</button>
+            <button class="tab" data-target="issues-section">Issue / Return</button>
+        </nav>
+
+        <section id="books-section" class="panel">
+            <h2>Book Management</h2>
+
+            <form action="{{ url_for('add_book') }}" method="POST"
+                  class="form-grid">
+                <input name="title" placeholder="Book title" required maxlength="150">
+                <input name="author" placeholder="Author name" required maxlength="100">
+                <input name="category" placeholder="Category" maxlength="80">
+                <input name="quantity" type="number" min="0"
+                       value="1" required>
+                <button type="submit" class="btn primary">Add Book</button>
+            </form>
+
+            <div class="search-row">
+                <input id="book-search" type="search"
+                       placeholder="Search by title, author or category...">
+                <button type="button" id="search-button" class="btn">
+                    Search
+                </button>
+                <button type="button" id="reset-search" class="btn secondary">
+                    Show All
+                </button>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Available</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="books-table">
+                    {% for book in books %}
+                        <tr>
+                            <td>{{ book.id }}</td>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>{{ book.category }}</td>
+                            <td>{{ book.quantity }}</td>
+                            <td class="actions">
+                                <button type="button" class="btn small edit-book"
+                                    data-id="{{ book.id }}"
+                                    data-title="{{ book.title }}"
+                                    data-author="{{ book.author }}"
+                                    data-category="{{ book.category }}"
+                                    data-quantity="{{ book.quantity }}">
+                                    Edit
+                                </button>
+                                <form action="{{ url_for('delete_book', book_id=book.id) }}"
+                                      method="POST" class="inline-form"
+                                      onsubmit="return confirm('Delete this book?')">
+                                    <button class="btn small danger" type="submit">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="6">No books found.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="edit-area" class="edit-area" hidden>
+                <h3>Edit Book</h3>
+                <form id="edit-form" method="POST" class="form-grid">
+                    <input name="title" id="edit-title" required placeholder="Title">
+                    <input name="author" id="edit-author" required placeholder="Author">
+                    <input name="category" id="edit-category" placeholder="Category">
+                    <input name="quantity" id="edit-quantity" type="number"
+                           min="0" required>
+                    <button class="btn primary" type="submit">Save Changes</button>
+                    <button class="btn secondary" id="cancel-edit"
+                            type="button">Cancel</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="students-section" class="panel" hidden>
+            <h2>Student Management</h2>
+
+            <form action="{{ url_for('add_student') }}" method="POST"
+                  class="form-grid">
+                <input name="name" placeholder="Student name" required maxlength="100">
+                <input name="department" placeholder="Department" maxlength="100">
+                <input name="phone" placeholder="Phone number" maxlength="20">
+                <button type="submit" class="btn primary">Add Student</button>
+            </form>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>{{ student.id }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.department }}</td>
+                            <td>{{ student.phone }}</td>
+                            <td>
+                                <form action="{{ url_for('delete_student', student_id=student.id) }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Delete this student?')">
+                                    <button type="submit" class="btn small danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="5">No students registered.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="issues-section" class="panel" hidden>
+            <h2>Issue a Book</h2>
+
+            <form action="{{ url_for('issue_book') }}" method="POST"
+                  class="form-grid">
+                <select name="book_id" required>
+                    <option value="">Select available book</option>
+                    {% for book in books %}
+                        {% if book.quantity > 0 %}
+                        <option value="{{ book.id }}">
+                            {{ book.title }} ({{ book.quantity }} available)
+                        </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <select name="student_id" required>
+                    <option value="">Select student</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn primary">Issue Book</button>
+            </form>
+
+            <h2 class="subheading">Issue and Return History</h2>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Book</th>
+                            <th>Student</th>
+                            <th>Issue Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for issue in issues %}
+                        <tr>
+                            <td>{{ issue.id }}</td>
+                            <td>{{ issue.book_title }}</td>
+                            <td>{{ issue.student_name }}</td>
+                            <td>{{ issue.issue_date }}</td>
+                            <td>{{ issue.return_date or '-' }}</td>
+                            <td>
+                                <span class="badge {{ 'issued' if issue.status == 'Issued' else 'returned' }}">
+                                    {{ issue.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if issue.status == 'Issued' %}
+                                <form action="{{ url_for('return_book', issue_id=issue.id) }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Return this book?')">
+                                    <button type="submit" class="btn small primary">
+                                        Return
+                                    </button>
+                                </form>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="7">No transactions yet.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>Library Management System · Python + Flask + SQLite</footer>
+    </main>
+
+
+    <script
+    src="{{ url_for('static', filename='script.js') }}"
+    defer>
+</script>
+
+</body>
+</html>

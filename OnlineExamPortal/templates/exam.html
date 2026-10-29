@@ -1,0 +1,99 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ exam.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+    <div>
+        <h2>{{ exam.title }}</h2>
+        <p class="text-muted mb-0">
+            Total Questions: {{ questions|length }}
+        </p>
+    </div>
+
+    <div class="timer-box">
+        Time Left: <span id="timer">--:--</span>
+    </div>
+</div>
+
+{% if questions %}
+<form method="POST" id="examForm">
+    {% for q in questions %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5>
+                Q{{ loop.index }}. {{ q.question_text }}
+                <small class="text-muted">({{ q.marks }} mark(s))</small>
+            </h5>
+
+            {% for letter, option in [
+                ('A', q.option_a),
+                ('B', q.option_b),
+                ('C', q.option_c),
+                ('D', q.option_d)
+            ] %}
+            <label class="option-label">
+                <input type="radio"
+                       name="question_{{ q.id }}"
+                       value="{{ letter }}">
+                {{ letter }}. {{ option }}
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success btn-lg"
+            id="submitButton">
+        Submit Exam
+    </button>
+</form>
+{% else %}
+<div class="alert alert-warning">No questions in this exam.</div>
+<a href="{{ url_for('student_dashboard') }}" class="btn btn-primary">
+    Back to Dashboard
+</a>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if questions %}
+<script>
+    let secondsLeft = {{ exam.duration|int }} * 60;
+    const timer = document.getElementById("timer");
+    const examForm = document.getElementById("examForm");
+    let submitted = false;
+
+    function updateTimer() {
+        const minutes = Math.floor(secondsLeft / 60);
+        const seconds = secondsLeft % 60;
+
+        timer.textContent =
+            String(minutes).padStart(2, "0") + ":" +
+            String(seconds).padStart(2, "0");
+
+        if (secondsLeft <= 0) {
+            submitted = true;
+            examForm.submit();
+            return;
+        }
+
+        secondsLeft--;
+    }
+
+    examForm.addEventListener("submit", function(event) {
+        if (submitted) return;
+
+        if (!confirm("Are you sure you want to submit the exam?")) {
+            event.preventDefault();
+        } else {
+            submitted = true;
+        }
+    });
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+</script>
+{% endif %}
+{% endblock %}

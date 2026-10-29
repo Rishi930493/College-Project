@@ -1,0 +1,98 @@
+
+{% extends "base.html" %}
+
+{% block title %}Laundry Orders{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h1>Manage Orders</h1>
+    <a href="{{ url_for('new_order') }}" class="btn btn-primary">
+        + New Order
+    </a>
+</div>
+
+<form method="GET" class="d-flex gap-2 mb-3">
+    <input class="form-control" name="q" value="{{ q }}"
+           placeholder="Search order, customer or phone">
+    <button type="submit" class="btn btn-outline-primary">Search</button>
+</form>
+
+<div class="table-responsive bg-white rounded">
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Weight</th>
+            <th>Bill</th>
+            <th>Status / Payment</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for o in orders %}
+        <tr>
+            <td>
+                <strong>{{ o.order_code }}</strong>
+                <div class="small text-secondary">{{ o.created_at }}</div>
+            </td>
+
+            <td>
+                {{ o.customer_name }}<br>
+                {{ o.phone }}
+            </td>
+
+            <td>{{ o.service_name }}</td>
+
+            <td>{{ o.weight }} kg</td>
+
+            <td>₹{{ "%.2f"|format(o.total) }}</td>
+
+            <td>
+                <form method="POST"
+                      action="{{ url_for('update_order', order_id=o.id) }}">
+
+                    <select class="form-select form-select-sm mb-2"
+                            name="status">
+                        {% for s in statuses %}
+                        <option value="{{ s }}"
+                            {% if s == o.status %}selected{% endif %}>
+                            {{ s }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-select form-select-sm mb-2"
+                            name="payment">
+                        {% for p in payments %}
+                        <option value="{{ p }}"
+                            {% if p == o.payment %}selected{% endif %}>
+                            {{ p }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" class="btn btn-success btn-sm w-100 mb-2">
+                        Update
+                    </button>
+                </form>
+
+                <a href="{{ url_for('print_receipt', order_id=o.id) }}"
+                   target="_blank"
+                   class="btn btn-sm btn-outline-primary w-100">
+                    Print Receipt
+                </a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="6" class="text-center">No orders found.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}

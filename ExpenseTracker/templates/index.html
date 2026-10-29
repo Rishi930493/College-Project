@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+<div class="container">
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">PERSONAL FINANCE</p>
+            <h1>Expense Tracker</h1>
+            <p class="subtitle">Track your money. Plan your future.</p>
+        </div>
+        <div class="today">{{ today }}</div>
+    </header>
+
+    <section class="summary">
+        <article class="card balance-card">
+            <p>Total Balance</p>
+            <h2>₹{{ "%.2f"|format(balance) }}</h2>
+            <span>Income minus expenses</span>
+        </article>
+        <article class="card">
+            <p>Total Income</p>
+            <h2 class="income">+ ₹{{ "%.2f"|format(income) }}</h2>
+            <span>All recorded income</span>
+        </article>
+        <article class="card">
+            <p>Total Expenses</p>
+            <h2 class="expense">− ₹{{ "%.2f"|format(expenses) }}</h2>
+            <span>All recorded expenses</span>
+        </article>
+    </section>
+
+    <section class="monthly card">
+        <div>
+            <p class="eyebrow">THIS MONTH</p>
+            <h2>Monthly Overview</h2>
+        </div>
+        <div class="monthly-item">
+            <span>Income</span>
+            <strong class="income">₹{{ "%.2f"|format(monthly_income) }}</strong>
+        </div>
+        <div class="monthly-item">
+            <span>Expenses</span>
+            <strong class="expense">₹{{ "%.2f"|format(monthly_expenses) }}</strong>
+        </div>
+    </section>
+
+    <main class="main-grid">
+        <section class="card form-card">
+            <h2 id="form-heading">Add Transaction</h2>
+            <p class="muted">Enter your income or expense details.</p>
+
+            <form id="transaction-form" action="{{ url_for('add_transaction') }}"
+                  method="POST">
+                <label for="title">Transaction Name</label>
+                <input id="title" name="title" type="text"
+                       placeholder="e.g. Grocery shopping" required maxlength="100">
+
+                <div class="two-columns">
+                    <div>
+                        <label for="amount">Amount (₹)</label>
+                        <input id="amount" name="amount" type="number"
+                               min="0.01" step="0.01" placeholder="500" required>
+                    </div>
+                    <div>
+                        <label for="kind">Type</label>
+                        <select id="kind" name="kind" required>
+                            <option value="Expense">Expense</option>
+                            <option value="Income">Income</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="">Select category</option>
+                    <option>Food</option>
+                    <option>Travel</option>
+                    <option>Shopping</option>
+                    <option>Bills</option>
+                    <option>Education</option>
+                    <option>Health</option>
+                    <option>Salary</option>
+                    <option>Business</option>
+                    <option>Other</option>
+                </select>
+
+                <label for="trans_date">Date</label>
+                <input id="trans_date" name="trans_date" type="date"
+                       value="{{ today }}" required>
+
+                <label for="note">Note (optional)</label>
+                <textarea id="note" name="note" rows="3"
+                          placeholder="Add a short note..."></textarea>
+
+                <button class="primary-btn" id="save-button" type="submit">
+                    + Add Transaction
+                </button>
+                <button class="secondary-btn hidden" id="cancel-edit"
+                        type="button">Cancel Edit</button>
+            </form>
+        </section>
+
+        <section class="card transactions-card">
+            <div class="section-heading">
+                <div>
+                    <h2>Transactions</h2>
+                    <p class="muted">Your recorded financial activity</p>
+                </div>
+                <span class="count">{{ transactions|length }} records</span>
+            </div>
+
+            <form class="filters" method="GET" action="{{ url_for('index') }}">
+                <input type="search" name="search" value="{{ search }}"
+                       placeholder="Search name or category">
+                <select name="kind">
+                    <option value="">All types</option>
+                    <option value="Income" {% if selected_kind == 'Income' %}selected{% endif %}>Income</option>
+                    <option value="Expense" {% if selected_kind == 'Expense' %}selected{% endif %}>Expense</option>
+                </select>
+                <select name="category">
+                    <option value="">All categories</option>
+                    {% for item in categories %}
+                    <option value="{{ item['category'] }}"
+                        {% if selected_category == item['category'] %}selected{% endif %}>
+                        {{ item['category'] }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button class="filter-btn" type="submit">Filter</button>
+                <a class="clear-btn" href="{{ url_for('index') }}">Clear</a>
+            </form>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Details</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in transactions %}
+                        <tr>
+                            <td>
+                                <strong>{{ item['title'] }}</strong>
+                                <small>{{ item['category'] }}</small>
+                                {% if item['note'] %}
+                                <small>{{ item['note'] }}</small>
+                                {% endif %}
+                            </td>
+                            <td>{{ item['trans_date'] }}</td>
+                            <td>
+                                <span class="type-pill {{ item['kind']|lower }}">
+                                    {{ item['kind'] }}
+                                </span>
+                            </td>
+                            <td class="{{ 'income' if item['kind'] == 'Income' else 'expense' }}">
+                                {{ '+' if item['kind'] == 'Income' else '−' }}₹{{ "%.2f"|format(item['amount']) }}
+                            </td>
+                            <td class="actions">
+                                <button type="button" class="edit-btn"
+                                    data-id="{{ item['id'] }}"
+                                    data-title="{{ item['title'] }}"
+                                    data-amount="{{ item['amount'] }}"
+                                    data-kind="{{ item['kind'] }}"
+                                    data-category="{{ item['category'] }}"
+                                    data-date="{{ item['trans_date'] }}"
+                                    data-note="{{ item['note'] }}">Edit</button>
+
+                                <form action="{{ url_for('delete_transaction', transaction_id=item['id']) }}"
+                                      method="POST" class="delete-form">
+                                    <button type="submit" class="delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="empty">
+                                No transactions found. Add your first transaction!
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>Expense Tracker · Built with Python, Flask and SQLite</footer>
+</div>
+</body>
+</html>
